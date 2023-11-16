@@ -1,10 +1,10 @@
-const { field, validators: r } = require('../../../../../index')
+const { field, validators: r, ValidationError } = require('../../../../index')
 
 /** @param {import('fastify').FastifyInstance} app */
 module.exports = async function secretAgentPage (app, opts) {
   app.casa.addPage({
     waypoint: '/',
-    view: 'pages/secret-agent/template.njk',
+    view: 'secret-agent/template.njk',
     fields: [
       field('license', { optional: true }).validators([
         r.strlen.make({

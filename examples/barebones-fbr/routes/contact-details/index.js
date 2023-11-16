@@ -1,12 +1,12 @@
 'use strict'
 
-const { field, validators: r } = require('../../../../../index')
+const { field, validators: r, ValidationError } = require('../../../../index')
 
 /** @param {import('fastify').FastifyInstance} app */
 module.exports = async function contactDetailsPage (app, opts) {
   app.casa.addPage({
     waypoint: '/',
-    view: 'pages/contact-details/template.njk',
+    view: 'contact-details/template.njk',
     fields: [
       field('tel', { optional: true }).validators([
         r.regex.make({

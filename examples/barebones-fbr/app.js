@@ -9,7 +9,6 @@ module.exports = async function casaBarebonesApp (app, opts) {
   // Register the CASA plugin with some config
   app.register(fastifyCasa, {
     views: [
-      path.resolve(__dirname, 'definitions'),
       path.resolve(__dirname, 'routes'),
       path.resolve(__dirname, 'views')
     ],
@@ -31,24 +30,6 @@ module.exports = async function casaBarebonesApp (app, opts) {
         next()
       }
     }]
-  })
-
-  // This should work and not show the CASA 404 page because the CASA
-  // middleware should be encapsulated within the fastify-casa plugin
-  app.get('/test-page', (request, reply) => {
-    return 'hello'
-  })
-
-  // Auto load CASA definitions, pages, plan, etc
-  app.register(autoload, {
-    dir: path.join(__dirname, 'definitions'),
-    dirNameRoutePrefix: function rewrite (folderParent, folderName) {
-      // Don't include 'pages' in waypoint paths
-      if (folderName === 'pages') {
-        return false
-      }
-      return folderName
-    }
   })
 
   // Auto load routes

@@ -4,7 +4,7 @@
 module.exports = async function submit (fastify, opts) {
   fastify.casa.addPage({
     waypoint: '/',
-    view: 'pages/submit/template.njk',
+    view: 'submit/template.njk',
     fields: [],
     hooks: [{
       hook: 'presanitise',

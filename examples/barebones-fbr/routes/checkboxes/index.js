@@ -1,12 +1,12 @@
 'use strict'
 
-const { field, validators: r, ValidationError } = require('../../../../../index')
+const { field, validators: r, ValidationError } = require('../../../../index')
 
 /** @param {import('fastify').FastifyInstance} app */
 module.exports = async function checkboxesPage (app, opts) {
   app.casa.addPage({
     waypoint: '/',
-    view: 'pages/checkboxes/template.njk',
+    view: 'checkboxes/template.njk',
     fields: [
       field('boxes').validators([
         r.required.make(),

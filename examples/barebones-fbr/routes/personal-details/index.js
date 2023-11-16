@@ -1,10 +1,10 @@
-const { field, validators: r } = require('../../../../../index')
+const { field, validators: r, ValidationError } = require('../../../../index')
 
 /** @param {import('fastify').FastifyInstance} app */
 module.exports = async function personalDetailsPage (app, opts) {
   app.casa.addPage({
     waypoint: '/',
-    view: 'pages/personal-details/template.njk',
+    view: 'personal-details/template.njk',
     fields: [
       field('title').validators([
         r.required.make({
