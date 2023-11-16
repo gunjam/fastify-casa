@@ -9,6 +9,8 @@ module.exports = async function casaBarebonesApp (app, opts) {
   // Register the CASA plugin with some config
   app.register(fastifyCasa, {
     views: [
+      path.resolve(__dirname, 'definitions'),
+      path.resolve(__dirname, 'routes'),
       path.resolve(__dirname, 'views')
     ],
     session: {
@@ -37,16 +39,27 @@ module.exports = async function casaBarebonesApp (app, opts) {
     return 'hello'
   })
 
-  // Auto load CASA definitions plugins
+  // Auto load CASA definitions, pages, plan, etc
   app.register(autoload, {
     dir: path.join(__dirname, 'definitions'),
-    dirNameRoutePrefix: false
+    dirNameRoutePrefix: function rewrite (folderParent, folderName) {
+      // Don't include 'pages' in waypoint paths
+      if (folderName === 'pages') {
+        return false
+      }
+      return folderName
+    }
+  })
+
+  // Auto load routes
+  app.register(autoload, {
+    dir: path.join(__dirname, 'routes')
   })
 
   // Auto load CASA plugins
   app.register(autoload, {
     dir: path.join(__dirname, 'plugins'),
     options: { waypoints: ['review'] },
-    dirNameRoutePrefix: false
+    dirNameRoutePrefix: false,
   })
 }

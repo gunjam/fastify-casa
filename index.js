@@ -24,19 +24,22 @@ async function casaWrapper (fastify, opts) {
   for (const method of Object.getOwnPropertyNames(MutableRouter.prototype)) {
     if (method !== 'constructor' && method !== 'seal') {
       staticRouter[method] = function (...args) {
-        this.routes.push([method, args])
+        this.routes.push([method, santiseRouterArgs(args, this.prefix)])
       }
       ancillaryRouter[method] = function (...args) {
-        this.routes.push([method, args])
+        this.routes.push([method, santiseRouterArgs(args, this.prefix)])
       }
       journeyRouter[method] = function (...args) {
-        this.routes.push([method, args])
+        this.routes.push([method, santiseRouterArgs(args, this.prefix)])
       }
     }
   }
 
   function addPage (opts) {
-    pages.push(opts)
+    pages.push({
+      ...opts,
+      waypoint: join(`.${this.prefix.replace(prefix, '')}`, opts.waypoint ?? '.').replace(/\/$/, '')
+    })
   }
 
   function addEvent (opts) {
@@ -78,6 +81,13 @@ async function casaWrapper (fastify, opts) {
     })
   }
 
+  function santiseRouterArgs(args, rPrefix) {
+    if (typeof args[0] === 'string') {
+      args[0] = join(`${rPrefix.replace(prefix, '')}`, args[0] ?? '.').replace(/\/$/, '')
+    }
+    return args
+  }
+
   function fixStaticPath (req, res, next) {
     res.locals.assetPath = join(prefix, 'govuk/assets')
     res.locals.casa.staticMountUrl = join(prefix, '/')
@@ -91,11 +101,13 @@ async function casaWrapper (fastify, opts) {
   }
 
   fastify.decorate('casa', {
+    prefix,
     plan,
     addPage,
     addEvent,
     staticRouter,
     ancillaryRouter,
+    journeyRouter,
     configure,
     nunjucks,
     register: registerCasaPlugin
@@ -113,6 +125,13 @@ async function casaWrapper (fastify, opts) {
     casa.use(app)
     casa.get('/*', defaultRouteHandler)
     casa.post('/*', defaultRouteHandler)
+  })
+
+  fastify.addHook('onRegister', function (instance) {
+    instance.casa.prefix = instance.prefix
+    instance.casa.staticRouter.prefix = instance.prefix
+    instance.casa.ancillaryRouter.prefix = instance.prefix
+    instance.casa.journeyRouter.prefix = instance.prefix
   })
 
   fastify.addHook('onReady', async function () {
