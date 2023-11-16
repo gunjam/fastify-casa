@@ -1,0 +1,29 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block casaPageTitle %}
+  {{ t('welcome:pageTitle') }}
+{% endblock %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ t('welcome:h1', { salutation: salutation }) }}</h1>
+
+  {{ t('welcome:html.body') | safe }}
+
+  <p class="govuk-body">
+    {{ govukButton({
+      text: t('welcome:btn'),
+      href: casa.mountUrl + "personal-details",
+      isStartButton: true
+    }) }}
+  </p>
+
+  <p class="govuk-body">
+    {{ govukButton({
+      text: 'Try an alternative context',
+      href: casa.mountUrl + "personal-details?contextid=" + demoContextId,
+      isStartButton: true
+    }) }}
+  </p>
+{% endblock %}

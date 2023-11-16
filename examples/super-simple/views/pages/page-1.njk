@@ -1,0 +1,15 @@
+{% extends "layouts/journey.njk" %}
+
+{% block casaPageTitle %}
+  Page 1
+{% endblock %}
+
+{% block journey_form %}
+  <h1 class="govuk-heading-xl">
+    Page 1
+  </h1>
+
+  {{ name | spaceOut }}
+
+  {% include 'extra-partial.njk' %}
+{% endblock %}
