@@ -6,14 +6,14 @@ module.exports = async function secretAgentPage (app, opts) {
     field('license', { optional: true }).validators([
       r.strlen.make({
         max: 20,
-        errorMsgMax: 'The license id is too long'
-      })
-    ])
+        errorMsgMax: 'The license id is too long',
+      }),
+    ]),
   ]
 
   app.casa.addPage({
     waypoint: 'secret-agent',
     view: 'pages/secret-agent.njk',
-    fields
+    fields,
   })
 }

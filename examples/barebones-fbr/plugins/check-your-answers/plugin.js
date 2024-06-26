@@ -42,10 +42,10 @@ module.exports = async function checkYourAnswers (app, opts) {
             waypoint: req.t(`${slug(wp)}:pageTitle`),
             rows: (pages?.[wp]?.fields ?? []).filter(f => f.meta.persist).map((field) => ({
               key: {
-                text: req.t(`${slug(wp)}:field.${field.name}.label`)
+                text: req.t(`${slug(wp)}:field.${field.name}.label`),
               },
               value: {
-                text: stringify(req.casa.journeyContext.data?.[wp]?.[field.name])
+                text: stringify(req.casa.journeyContext.data?.[wp]?.[field.name]),
               },
               actions: {
                 items: [{
@@ -57,15 +57,15 @@ module.exports = async function checkYourAnswers (app, opts) {
                     editOrigin: waypointUrl({
                       journeyContext: req?.casa?.journeyContext,
                       waypoint,
-                      mountUrl: `${req.baseUrl}/`
-                    })
+                      mountUrl: `${req.baseUrl}/`,
+                    }),
                   }) + `#f-${field.name}`,
                   text: req.t('check-your-answers:change'),
                   visuallyHiddenText: req.t(`${slug(wp)}:field.${field.name}.label`),
-                  classes: 'govuk-link--no-visited-state'
-                }]
-              }
-            }))
+                  classes: 'govuk-link--no-visited-state',
+                }],
+              },
+            })),
           })
         })
 
@@ -77,7 +77,7 @@ module.exports = async function checkYourAnswers (app, opts) {
         waypoint,
         view: 'check-your-answers/template.njk',
         hooks: [{ hook: 'prerender', middleware: preRender }],
-        fields: []
+        fields: [],
       })
     }
   }

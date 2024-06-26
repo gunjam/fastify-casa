@@ -13,8 +13,8 @@ let logger = true
 if (process.stdout.isTTY) {
   logger = {
     transport: {
-      target: 'pino-pretty'
-    }
+      target: 'pino-pretty',
+    },
   }
 }
 

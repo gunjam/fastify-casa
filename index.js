@@ -38,7 +38,7 @@ async function casaWrapper (fastify, opts) {
   function addPage (opts) {
     pages.push({
       ...opts,
-      waypoint: join(`.${this.prefix.replace(prefix, '')}`, opts.waypoint ?? '.').replace(/\/$/, '')
+      waypoint: join(`.${this.prefix.replace(prefix, '')}`, opts.waypoint ?? '.').replace(/\/$/, ''),
     })
   }
 
@@ -59,7 +59,7 @@ async function casaWrapper (fastify, opts) {
       configure: () => {},
       bootstrap: function ({ nunjucksEnv }) {
         nunjucksEnv.modifyBlock(blockname, cb)
-      }
+      },
     })
   }
 
@@ -81,7 +81,7 @@ async function casaWrapper (fastify, opts) {
     })
   }
 
-  function santiseRouterArgs(args, rPrefix) {
+  function santiseRouterArgs (args, rPrefix) {
     if (typeof args[0] === 'string') {
       args[0] = join(`${rPrefix.replace(prefix, '')}`, args[0] ?? '.').replace(/\/$/, '')
     }
@@ -97,7 +97,7 @@ async function casaWrapper (fastify, opts) {
   const nunjucks = {
     addFilter: addNunjucksFilter,
     addGlobal: addNunjucksGlobal,
-    modifyBlock
+    modifyBlock,
   }
 
   fastify.decorate('casa', {
@@ -110,7 +110,7 @@ async function casaWrapper (fastify, opts) {
     journeyRouter,
     configure,
     nunjucks,
-    register: registerCasaPlugin
+    register: registerCasaPlugin,
   })
 
   function logError (err, req, res, next) {
@@ -141,7 +141,7 @@ async function casaWrapper (fastify, opts) {
       plan,
       events,
       hooks,
-      plugins: casaPlugins
+      plugins: casaPlugins,
     })
 
     fastify.decorate(kNunjucksEnv, casa.nunjucksEnv)

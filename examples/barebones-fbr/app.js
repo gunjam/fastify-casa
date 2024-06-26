@@ -10,17 +10,17 @@ module.exports = async function casaBarebonesApp (app, opts) {
   app.register(fastifyCasa, {
     views: [
       path.resolve(__dirname, 'routes'),
-      path.resolve(__dirname, 'views')
+      path.resolve(__dirname, 'views'),
     ],
     session: {
       name: 'myappsessionid',
       secret: 'secret',
       ttl: 3600,
-      secure: false
+      secure: false,
     },
     i18n: {
       dirs: [path.resolve(__dirname, 'locales')],
-      locales: ['en', 'cy']
+      locales: ['en', 'cy'],
     },
     hooks: [{
       hook: 'journey.postvalidate',
@@ -28,13 +28,13 @@ module.exports = async function casaBarebonesApp (app, opts) {
         const errors = req.casa.journeyContext.getValidationErrorsForPage(req.casa.waypoint)
         req.log.info(`Running the example "journey.postvalidate" hook on "${req.path}". There were ${errors.length} errors`)
         next()
-      }
-    }]
+      },
+    }],
   })
 
   // Auto load routes
   app.register(autoload, {
-    dir: path.join(__dirname, 'routes')
+    dir: path.join(__dirname, 'routes'),
   })
 
   // Auto load CASA plugins

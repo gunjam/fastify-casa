@@ -1,4 +1,4 @@
-const { field, validators: r, ValidationError } = require('../../../../index')
+const { field, validators: r } = require('../../../../index')
 
 /** @param {import('fastify').FastifyInstance} app */
 module.exports = async function secretAgentPage (app, opts) {
@@ -9,9 +9,9 @@ module.exports = async function secretAgentPage (app, opts) {
       field('license', { optional: true }).validators([
         r.strlen.make({
           max: 20,
-          errorMsgMax: 'The license id is too long'
-        })
-      ])
-    ]
+          errorMsgMax: 'The license id is too long',
+        }),
+      ]),
+    ],
   })
 }

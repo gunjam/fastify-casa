@@ -6,18 +6,18 @@ module.exports = async function (fastify, opts) {
   // Register plugin with CASA config
   await fastify.register(fastifyCasa, {
     views: [
-      resolve(__dirname, 'views')
+      resolve(__dirname, 'views'),
     ],
     session: {
       name: 'myappsessionid',
       secret: 'secret',
       ttl: 3600,
-      secure: false
+      secure: false,
     },
     i18n: {
       dirs: [resolve(__dirname, 'locales')],
-      locales: ['en', 'cy']
-    }
+      locales: ['en', 'cy'],
+    },
   })
 
   // Redirect from root
@@ -28,15 +28,15 @@ module.exports = async function (fastify, opts) {
   // Add page definitions
   fastify.casa.addPage({
     waypoint: 'page-1',
-    view: 'pages/page-1.njk'
+    view: 'pages/page-1.njk',
   })
   fastify.casa.addPage({
     waypoint: 'page-2',
-    view: 'pages/page-2.njk'
+    view: 'pages/page-2.njk',
   })
   fastify.casa.addPage({
     waypoint: 'page-3',
-    view: 'pages/page-3.njk'
+    view: 'pages/page-3.njk',
   })
 
   // Setup plan
