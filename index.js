@@ -6,7 +6,7 @@ const fastifyExpress = require('@fastify/express')
 const express = require('express')
 const fp = require('fastify-plugin')
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 async function casaWrapper (fastify, opts) {
   const prefix = fastify.prefix || '/'
   const plan = opts.plan || new Plan({ arbiter: 'auto' })
