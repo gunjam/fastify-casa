@@ -2,7 +2,7 @@
 
 const { JourneyContext } = require('../../../index')
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 module.exports = async function ancillaryRoutes (app, opts) {
   // Example: Adding custom routes before page handlers
   // You can do this by adding a route/middleware to the `ancillaryRouter`.

@@ -1,6 +1,6 @@
 'use strict'
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 module.exports = async function submit (fastify, opts) {
   fastify.casa.addPage({
     waypoint: 'submit',

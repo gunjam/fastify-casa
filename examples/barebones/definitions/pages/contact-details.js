@@ -2,7 +2,7 @@
 
 const { field, validators: r } = require('../../../../index')
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 module.exports = async function contactDetailsPage (app, opts) {
   const fields = [
     field('tel', { optional: true }).validators([

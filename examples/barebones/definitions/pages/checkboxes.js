@@ -2,7 +2,7 @@
 
 const { field, validators: r, ValidationError } = require('../../../../index')
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 module.exports = async function checkboxesPage (app, opts) {
   // Custom validation, with sanitisation, using a basic object format
   const boxValidator = {

@@ -2,7 +2,7 @@
 
 const { constants } = require('../../../index')
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 module.exports = async function events (app, opts) {
   // This "waypoint-change" event is triggered whenever data/validation
   // changes on a waypoint, just prior to it being committed to the session.

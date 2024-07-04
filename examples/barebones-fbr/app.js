@@ -4,7 +4,7 @@ const path = require('node:path')
 const autoload = require('@fastify/autoload')
 const fastifyCasa = require('../../index')
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 module.exports = async function casaBarebonesApp (app, opts) {
   // Register the CASA plugin with some config
   app.register(fastifyCasa, {
@@ -15,7 +15,7 @@ module.exports = async function casaBarebonesApp (app, opts) {
     session: {
       name: 'myappsessionid',
       secret: 'secret',
-      ttl: 3600,
+      ttl: 3_600,
       secure: false,
     },
     i18n: {

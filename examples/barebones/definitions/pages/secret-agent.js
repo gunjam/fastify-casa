@@ -1,6 +1,6 @@
 const { field, validators: r } = require('../../../../index')
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 module.exports = async function secretAgentPage (app, opts) {
   const fields = [
     field('license', { optional: true }).validators([

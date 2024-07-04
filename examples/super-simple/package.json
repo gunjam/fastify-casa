@@ -1,5 +1,5 @@
 {
-  "name": "govuk-casa-barebones-example-fbr",
+  "name": "govuk-casa-super-simple-example",
   "version": "1.0.0",
   "description": "CASA example: barebones application",
   "keywords": [],
@@ -11,10 +11,6 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "@fastify/autoload": "^5.8.0",
-    "close-with-grace": "^1.2.0",
-    "dotenv": "^16.3.1",
-    "fastify": "^4.24.3",
-    "pino-pretty": "^10.2.3"
+    "fastify": "^4.24.3"
   }
 }
