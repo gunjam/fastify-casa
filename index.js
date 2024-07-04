@@ -16,6 +16,7 @@ async function casaWrapper (fastify, opts) {
   const casaPlugins = opts.plugins || []
   const nunjucksFilters = []
   const nunjucksGlobals = []
+  const nunjucksViews = []
   const staticRouter = { routes: [] }
   const ancillaryRouter = { routes: [] }
   const journeyRouter = { routes: [] }
@@ -57,7 +58,7 @@ async function casaWrapper (fastify, opts) {
   function modifyBlock (blockname, cb) {
     casaPlugins.push({
       configure: () => {},
-      bootstrap: function ({ nunjucksEnv }) {
+      bootstrap: ({ nunjucksEnv }) => {
         nunjucksEnv.modifyBlock(blockname, cb)
       },
     })
@@ -69,6 +70,10 @@ async function casaWrapper (fastify, opts) {
 
   function addNunjucksGlobal (...globalArgs) {
     nunjucksGlobals.push(globalArgs)
+  }
+
+  function addNunjucksViews (...globalArgs) {
+    nunjucksViews.push(globalArgs)
   }
 
   function defaultRouteHandler (request, reply) {
@@ -97,6 +102,7 @@ async function casaWrapper (fastify, opts) {
   const nunjucks = {
     addFilter: addNunjucksFilter,
     addGlobal: addNunjucksGlobal,
+    addViews: addNunjucksViews,
     modifyBlock,
   }
 
@@ -127,16 +133,20 @@ async function casaWrapper (fastify, opts) {
     casa.post('/*', defaultRouteHandler)
   })
 
-  fastify.addHook('onRegister', function (instance) {
+  fastify.addHook('onRegister', (instance) => {
     instance.casa.prefix = instance.prefix
     instance.casa.staticRouter.prefix = instance.prefix
     instance.casa.ancillaryRouter.prefix = instance.prefix
     instance.casa.journeyRouter.prefix = instance.prefix
   })
 
-  fastify.addHook('onReady', async function () {
+  fastify.addHook('onReady', async () => {
     const casa = casaConfigure({
       ...opts,
+      views: [
+        ...opts.views,
+        ...nunjucksViews,
+      ],
       pages,
       plan,
       events,
