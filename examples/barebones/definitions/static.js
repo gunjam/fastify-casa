@@ -3,7 +3,7 @@
 const path = require('node:path')
 const express = require('express')
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 module.exports = async function staticRoutes (app, opts) {
   // Example: Adding a custom static asset route
   // Attach these to the `staticRouter`

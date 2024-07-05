@@ -1,11 +1,10 @@
-const { resolve } = require('path')
+const { resolve } = require('node:path')
 const { waypointUrl } = require('../../../../index')
 
 /**
  * waypoint[] = list of waypoints on which CYA will be enabled
  *
- * @param {CheckYourAnswersPluginOptions} param0
- * @returns
+ * @type {import('fastify').FastifyPluginAsync}
  */
 module.exports = async function checkYourAnswers (app, opts) {
   const { waypoints = ['check-your-answers'] } = opts
@@ -23,9 +22,9 @@ module.exports = async function checkYourAnswers (app, opts) {
   function configure (config) {
     // Structure pages to make it more easily searchable by waypoint
     const pages = {}
-    config.pages.forEach((page) => {
+    for (const page of config.pages) {
       pages[page.waypoint] = page
-    })
+    }
 
     // Add a views directory
     config.views.push(resolve(__dirname, 'views'))
@@ -36,38 +35,40 @@ module.exports = async function checkYourAnswers (app, opts) {
         const traversed = config.plan.traverse(req.casa.journeyContext)
         const sections = []
 
-        traversed.forEach((wp) => {
+        for (const wp of traversed) {
+          const fieldLink = waypointUrl({
+            journeyContext: req?.casa?.journeyContext,
+            waypoint: wp,
+            mountUrl: `${req.baseUrl}/`,
+            edit: true,
+            editOrigin: waypointUrl({
+              journeyContext: req?.casa?.journeyContext,
+              waypoint,
+              mountUrl: `${req.baseUrl}/`,
+            }),
+          })
+
           // TODO: Need to handle exit nodes (e.g. waypoints using `url://` protocol)
           sections.push({
             waypoint: req.t(`${slug(wp)}:pageTitle`),
             rows: (pages?.[wp]?.fields ?? []).filter(f => f.meta.persist).map((field) => ({
               key: {
-                text: req.t(`${slug(wp)}:field.${field.name}.label`)
+                text: req.t(`${slug(wp)}:field.${field.name}.label`),
               },
               value: {
-                text: stringify(req.casa.journeyContext.data?.[wp]?.[field.name])
+                text: stringify(req.casa.journeyContext.data?.[wp]?.[field.name]),
               },
               actions: {
                 items: [{
-                  href: waypointUrl({
-                    journeyContext: req?.casa?.journeyContext,
-                    waypoint: wp,
-                    mountUrl: `${req.baseUrl}/`,
-                    edit: true,
-                    editOrigin: waypointUrl({
-                      journeyContext: req?.casa?.journeyContext,
-                      waypoint,
-                      mountUrl: `${req.baseUrl}/`
-                    })
-                  }) + `#f-${field.name}`,
+                  href: `${fieldLink}#f-${field.name}`,
                   text: req.t('check-your-answers:change'),
                   visuallyHiddenText: req.t(`${slug(wp)}:field.${field.name}.label`),
-                  classes: 'govuk-link--no-visited-state'
-                }]
-              }
-            }))
+                  classes: 'govuk-link--no-visited-state',
+                }],
+              },
+            })),
           })
-        })
+        }
 
         res.locals.sections = sections.filter(s => s.rows.length)
         next()
@@ -77,7 +78,7 @@ module.exports = async function checkYourAnswers (app, opts) {
         waypoint,
         view: 'check-your-answers/template.njk',
         hooks: [{ hook: 'prerender', middleware: preRender }],
-        fields: []
+        fields: [],
       })
     }
   }

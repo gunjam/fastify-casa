@@ -1,6 +1,6 @@
 'use strict'
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 module.exports = async function submit (fastify, opts) {
   fastify.casa.addPage({
     waypoint: 'submit',
@@ -20,7 +20,7 @@ module.exports = async function submit (fastify, opts) {
           }
           res.status(302).redirect(`${req.baseUrl}/what-happens-next`)
         })
-      }
-    }]
+      },
+    }],
   })
 }

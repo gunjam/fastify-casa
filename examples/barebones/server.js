@@ -13,8 +13,8 @@ let logger = true
 if (process.stdout.isTTY) {
   logger = {
     transport: {
-      target: 'pino-pretty'
-    }
+      target: 'pino-pretty',
+    },
   }
 }
 
@@ -30,7 +30,7 @@ const app2 = require('./app-2.js')
 app.register(app2)
 
 // delay is the number of milliseconds for the graceful close to finish
-const closeListeners = closeWithGrace({ delay: process.env.FASTIFY_CLOSE_GRACE_DELAY || 500 }, async function ({ signal, err, manual }) {
+const closeListeners = closeWithGrace({ delay: process.env.FASTIFY_CLOSE_GRACE_DELAY || 500 }, async ({ signal, err, manual }) => {
   if (err) {
     app.log.error(err)
   }
@@ -43,7 +43,7 @@ app.addHook('onClose', (instance, done) => {
 })
 
 // Start listening.
-app.listen({ port: process.env.PORT || 3000 }, (err) => {
+app.listen({ port: process.env.PORT || 3_000 }, (err) => {
   if (err) {
     app.log.error(err)
     process.exit(1)

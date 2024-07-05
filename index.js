@@ -6,7 +6,7 @@ const fastifyExpress = require('@fastify/express')
 const express = require('express')
 const fp = require('fastify-plugin')
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 async function casaWrapper (fastify, opts) {
   const prefix = fastify.prefix || '/'
   const plan = opts.plan || new Plan({ arbiter: 'auto' })
@@ -16,9 +16,10 @@ async function casaWrapper (fastify, opts) {
   const casaPlugins = opts.plugins || []
   const nunjucksFilters = []
   const nunjucksGlobals = []
-  const staticRouter = { routes: [] }
-  const ancillaryRouter = { routes: [] }
-  const journeyRouter = { routes: [] }
+  const nunjucksViews = []
+  const staticRouter = { routes: [], prefix }
+  const ancillaryRouter = { routes: [], prefix }
+  const journeyRouter = { routes: [], prefix }
   const kNunjucksEnv = Symbol('casa:nunjucks')
 
   for (const method of Object.getOwnPropertyNames(MutableRouter.prototype)) {
@@ -38,7 +39,7 @@ async function casaWrapper (fastify, opts) {
   function addPage (opts) {
     pages.push({
       ...opts,
-      waypoint: join(`.${this.prefix.replace(prefix, '')}`, opts.waypoint ?? '.').replace(/\/$/, '')
+      waypoint: join(`.${this.prefix.replace(prefix, '')}`, opts.waypoint ?? '.').replace(/\/$/, ''),
     })
   }
 
@@ -57,9 +58,9 @@ async function casaWrapper (fastify, opts) {
   function modifyBlock (blockname, cb) {
     casaPlugins.push({
       configure: () => {},
-      bootstrap: function ({ nunjucksEnv }) {
+      bootstrap: ({ nunjucksEnv }) => {
         nunjucksEnv.modifyBlock(blockname, cb)
-      }
+      },
     })
   }
 
@@ -69,6 +70,10 @@ async function casaWrapper (fastify, opts) {
 
   function addNunjucksGlobal (...globalArgs) {
     nunjucksGlobals.push(globalArgs)
+  }
+
+  function addNunjucksViews (...globalArgs) {
+    nunjucksViews.push(globalArgs)
   }
 
   function defaultRouteHandler (request, reply) {
@@ -81,7 +86,7 @@ async function casaWrapper (fastify, opts) {
     })
   }
 
-  function santiseRouterArgs(args, rPrefix) {
+  function santiseRouterArgs (args, rPrefix) {
     if (typeof args[0] === 'string') {
       args[0] = join(`${rPrefix.replace(prefix, '')}`, args[0] ?? '.').replace(/\/$/, '')
     }
@@ -97,7 +102,8 @@ async function casaWrapper (fastify, opts) {
   const nunjucks = {
     addFilter: addNunjucksFilter,
     addGlobal: addNunjucksGlobal,
-    modifyBlock
+    addViews: addNunjucksViews,
+    modifyBlock,
   }
 
   fastify.decorate('casa', {
@@ -110,7 +116,7 @@ async function casaWrapper (fastify, opts) {
     journeyRouter,
     configure,
     nunjucks,
-    register: registerCasaPlugin
+    register: registerCasaPlugin,
   })
 
   function logError (err, req, res, next) {
@@ -122,26 +128,33 @@ async function casaWrapper (fastify, opts) {
 
   fastify.register(async (casa) => {
     await casa.register(fastifyExpress)
-    casa.use(app)
+    casa.use('/', app)
+
+    // the @fastify/casa plugin loads express middleware as an onRequest hook
+    // so we have to add some catach-all routes so the pages are accessible.
     casa.get('/*', defaultRouteHandler)
     casa.post('/*', defaultRouteHandler)
   })
 
-  fastify.addHook('onRegister', function (instance) {
+  fastify.addHook('onRegister', (instance) => {
     instance.casa.prefix = instance.prefix
     instance.casa.staticRouter.prefix = instance.prefix
     instance.casa.ancillaryRouter.prefix = instance.prefix
     instance.casa.journeyRouter.prefix = instance.prefix
   })
 
-  fastify.addHook('onReady', async function () {
+  fastify.addHook('onReady', async () => {
     const casa = casaConfigure({
       ...opts,
+      views: [
+        ...opts.views,
+        ...nunjucksViews,
+      ],
       pages,
       plan,
       events,
       hooks,
-      plugins: casaPlugins
+      plugins: casaPlugins,
     })
 
     fastify.decorate(kNunjucksEnv, casa.nunjucksEnv)
@@ -165,7 +178,7 @@ async function casaWrapper (fastify, opts) {
       casa.nunjucksEnv.addGlobal(...globalArgs)
     }
 
-    casa.mount(app, { route: prefix })
+    casa.mount(app)
   })
 }
 

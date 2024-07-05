@@ -1,5 +1,6 @@
 const { resolve } = require('node:path')
 
+/** @type {import('fastify').FastifyPluginAsync} */
 module.exports = async function cookieConsent (app, opts) {
   const configure = (config) => {
     // Add a views directory

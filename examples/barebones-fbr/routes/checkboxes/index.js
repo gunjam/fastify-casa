@@ -23,10 +23,10 @@ module.exports = async function checkboxesPage (app, opts) {
                     inline: 'checkboxes:errors.min.inline',
                     summary: 'checkboxes:errors.min.summary',
                     variables: {
-                      count: fieldValue ? fieldValue.length : 0
-                    }
-                  }
-                })
+                      count: fieldValue ? fieldValue.length : 0,
+                    },
+                  },
+                }),
               ]
             }
             return []
@@ -36,9 +36,9 @@ module.exports = async function checkboxesPage (app, opts) {
               return value.map(String)
             }
             return undefined
-          }
-        }
-      ])
-    ]
+          },
+        },
+      ]),
+    ],
   })
 }

@@ -2,7 +2,7 @@
 
 const { constants } = require('../../../index')
 
-/** @param {import('fastify').FastifyInstance} app */
+/** @type {import('fastify').FastifyPluginAsync} */
 module.exports = async function events (app, opts) {
   // This "waypoint-change" event is triggered whenever data/validation
   // changes on a waypoint, just prior to it being committed to the session.
@@ -18,7 +18,7 @@ module.exports = async function events (app, opts) {
         console.log('removing validation state on contact-details because secret-agent has a "to kill" license')
         journeyContext.removeValidationStateForPage('contact-details')
       }
-    }
+    },
   })
 
   // This "context-change" event is triggered after all "waypoint-change"
@@ -54,6 +54,6 @@ module.exports = async function events (app, opts) {
       const toPurge = all.filter(e => !traversed.includes(e))
       journeyContext.purge(toPurge)
       console.log(`Purged data for untraversable waypoints. We now have data for ${JSON.stringify(Object.keys(journeyContext.data))}`)
-    }
+    },
   })
 }

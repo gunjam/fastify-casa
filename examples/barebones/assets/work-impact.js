@@ -36,7 +36,6 @@
      * @returns {void}
      */
     function showTarget (targetEl) {
-      /* eslint-disable-next-line no-param-reassign */
       console.log('show', targetEl)
       targetEl.className = targetEl.className.replace(/ *js-hidden/, '')
     }
@@ -48,7 +47,6 @@
      * @returns {void}
      */
     function hideTarget (targetEl) {
-      /* eslint-disable-next-line no-param-reassign */
       console.log('hide', targetEl)
       targetEl.className = targetEl.className.replace(/ *js-hidden/, '') + ' js-hidden'
     }

@@ -20,7 +20,7 @@ module.exports = async function submit (fastify, opts) {
           }
           res.status(302).redirect(`${req.baseUrl}/what-happens-next`)
         })
-      }
-    }]
+      },
+    }],
   })
 }
