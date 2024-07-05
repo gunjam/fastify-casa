@@ -17,9 +17,9 @@ async function casaWrapper (fastify, opts) {
   const nunjucksFilters = []
   const nunjucksGlobals = []
   const nunjucksViews = []
-  const staticRouter = { routes: [] }
-  const ancillaryRouter = { routes: [] }
-  const journeyRouter = { routes: [] }
+  const staticRouter = { routes: [], prefix }
+  const ancillaryRouter = { routes: [], prefix }
+  const journeyRouter = { routes: [], prefix }
   const kNunjucksEnv = Symbol('casa:nunjucks')
 
   for (const method of Object.getOwnPropertyNames(MutableRouter.prototype)) {
@@ -128,7 +128,10 @@ async function casaWrapper (fastify, opts) {
 
   fastify.register(async (casa) => {
     await casa.register(fastifyExpress)
-    casa.use(app)
+    casa.use('/', app)
+
+    // the @fastify/casa plugin loads express middleware as an onRequest hook
+    // so we have to add some catach-all routes so the pages are accessible.
     casa.get('/*', defaultRouteHandler)
     casa.post('/*', defaultRouteHandler)
   })
@@ -175,7 +178,7 @@ async function casaWrapper (fastify, opts) {
       casa.nunjucksEnv.addGlobal(...globalArgs)
     }
 
-    casa.mount(app, { route: prefix })
+    casa.mount(app)
   })
 }
 
