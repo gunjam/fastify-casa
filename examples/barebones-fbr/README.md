@@ -2,7 +2,7 @@
 
 # Install and run this example
 ```
-cd examples/barebones/
+cd examples/barebones-fbr/
 npm i
 npm start
 ```
