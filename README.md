@@ -142,10 +142,17 @@ app.casa.staticRouter.get('/css/application.css', (request, reply) => {
 There are [nunjucks](https://mozilla.github.io/nunjucks/api.html) decorator functions available which will allow you to add more template paths, globals, filters as well as modify nunjucks blocks as shown in the [CASA plugins documentation](https://github.com/dwp/govuk-casa/blob/main/docs/plugins.md#injecting-content-into-templates).
 
 ```javascript
+// Add a nunjucks filter
 app.casa.nunjucks.addFilter('uppercase', (str) => str.toUpperCase())
+
+// Add a global var to the nunjucks environment
 app.casa.nunjucks.addGlobal('version', '1.2.0')
+
+// Add one or more views paths
 app.casa.nunjucks.addViews('./path-to-views')
 app.casa.nunjucks.addViews(['./views-1', '/views-2'])
+
+// Modify the content of a nunjucks template {% block %}
 app.casa.nunjucks.modifyBlock('blockName', () => {
   return `This will add some content from another template at the beginning of
     the "blockName" block: {% include "my-plugin/thing.njk" %}`;
