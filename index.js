@@ -127,12 +127,14 @@ async function casaWrapper (fastify, opts) {
 
   const app = express()
 
+  // Setting up a separate encapsulation context so the CASA middleware does
+  // not leak into the rest of the fastify application.
   fastify.register(async (casa) => {
     await casa.register(fastifyExpress)
     casa.use('/', app)
 
-    // the @fastify/casa plugin loads express middleware as an onRequest hook
-    // so we have to add some catach-all routes so the pages are accessible.
+    // the @fastify/express plugin loads all express middleware as an onRequest
+    // hooks so we have use some catach-all routes so the pages are accessible.
     casa.get('/*', defaultRouteHandler)
     casa.post('/*', defaultRouteHandler)
   })
