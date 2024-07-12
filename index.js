@@ -72,8 +72,9 @@ async function casaWrapper (fastify, opts) {
     nunjucksGlobals.push(globalArgs)
   }
 
-  function addNunjucksViews (...globalArgs) {
-    nunjucksViews.push(globalArgs)
+  function addNunjucksViews (views) {
+    const paths = Array.isArray(views) ? views : [views]
+    nunjucksViews.push(...paths)
   }
 
   function defaultRouteHandler (request, reply) {
